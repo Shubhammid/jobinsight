@@ -5,20 +5,64 @@ import {
   AutosizeTextAreaRef,
 } from "@/components/ui/autosize-textarea";
 import { Button } from "@/components/ui/button";
-import { SendIcon } from "lucide-react";
+import { api } from "@/convex/_generated/api";
+import { useSignInModal } from "@/hooks/use-signin-modal";
+import { useUser } from "@clerk/nextjs";
+import { useMutation } from "convex/react";
+import { ConvexError } from "convex/values";
+import { Loader, SendIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
+import { toast } from "sonner";
 
 const JobInfoForm = () => {
+  const router = useRouter();
+  const { isSignedIn, user } = useUser();
+  const { open: openSignInModal } = useSignInModal();
+
   const [jobDescription, setJobDescription] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const textareaRef = useRef<AutosizeTextAreaRef>(null);
 
-    const handleChange = (e: {
+  const createJob = useMutation(api.job.createJob);
+
+  const handleChange = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
     setJobDescription(e.target.value);
   };
 
-    const handleSubmit = () => {};
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    if (!isSignedIn || !user) {
+      openSignInModal();
+      return;
+    }
+
+    if (!jobDescription.trim()) {
+      toast.error("Please enter a job description");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await createJob({
+        userId: user.id,
+        jobDescription: jobDescription,
+      });
+      if (!response.data && response.requiresUpgrade) {
+        return;
+      }
+      router.push(`job/${response.data}`);
+    } catch (error) {
+      const errorMessage =
+        error instanceof ConvexError && error.data?.message
+          ? error.data.message
+          : "Failed to create Job";
+      toast.error(errorMessage);
+    }
+  };
 
   return (
     <div
@@ -44,7 +88,7 @@ const JobInfoForm = () => {
             onChange={handleChange}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
-                handleSubmit();
+                handleSubmit(e);
               }
             }}
             placeholder="Paste Job title & description"
@@ -63,9 +107,13 @@ const JobInfoForm = () => {
           <Button
             size="icon"
             onClick={handleSubmit}
-            disabled={!jobDescription?.trim()}
+            disabled={isSubmitting || !jobDescription?.trim()}
           >
-            <SendIcon />
+            {isSubmitting ? (
+              <Loader className="w-4 h-4 animate-spin" />
+            ) : (
+              <SendIcon />
+            )}
           </Button>
         </div>
       </div>

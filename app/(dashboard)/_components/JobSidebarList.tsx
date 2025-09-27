@@ -13,10 +13,27 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { MessageSquareTextIcon } from "lucide-react";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const JobSidebarList = () => {
+const JobSidebarList = (props: { userId: string }) => {
+  const pathname = usePathname();
+  const jobs = useQuery(api.job.getAllJobs, {
+    userId: props.userId,
+  });
 
-const pathname = usePathname();
+  if (jobs === undefined) {
+    return (
+      <div className="w-full flex flex-col gap-3 px-2">
+        <Skeleton className="h-[20px] w-full bg-gray-600" />
+        <Skeleton className="h-[20px] w-full bg-gray-600" />
+        <Skeleton className="h-[20px] w-full bg-gray-600" />
+      </div>
+    );
+  }
+
+  if (jobs?.length === 0) return null;
 
   return (
     <SidebarGroup>
@@ -29,20 +46,28 @@ const pathname = usePathname();
              scrollbar overflow-y-auto pb-2
               "
         >
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              className={cn(
-                `
+          {jobs?.map((item) => {
+            const jobPageUrl = `/job/${item._id}`;
+            return (
+              <SidebarMenuItem key={item._id}>
+                <SidebarMenuButton
+                  className={cn(
+                    `
             !bg-transparent !text-white hover:!bg-gray-700
             transition-colors
-            `,  pathname === "" && "!bg-gray-700" )} asChild
-            >
-              <Link href="#" className="text-white">
-                <MessageSquareTextIcon className="w-4 h-4" />
-                <span>Software Develpoer</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+            `,
+                    jobPageUrl === pathname && "!bg-gray-700"
+                  )}
+                  asChild
+                >
+                  <Link href={jobPageUrl} className="text-white">
+                    <MessageSquareTextIcon className="w-4 h-4" />
+                    <span>{item.jobTitle}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
