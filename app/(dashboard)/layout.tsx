@@ -1,6 +1,7 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import AppSidebar from "./_components/AppSidebar";
 import SignInModal from "@/components/SigninModal";
+import UpgradeModal from "@/components/UpgradeModal";
 
 export default async function DashboardLayout({
   children,
@@ -23,6 +24,7 @@ export default async function DashboardLayout({
 
 
       <SignInModal />
+      <UpgradeModal />
     </>
   );
 }
