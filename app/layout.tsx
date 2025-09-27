@@ -4,6 +4,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { ConvexClientProvider } from "@/context/ConvexClientProvider";
 
 const onest = Onest({ subsets: ["latin"] });
 
@@ -19,16 +20,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-     <ClerkProvider>
-    <html lang="en">
-      <body
+    <ClerkProvider>
+      <html lang="en">
+        <body
           className={`bg-white ${onest.className}`}
           suppressHydrationWarning
         >
-        <NuqsAdapter>{children}</NuqsAdapter>
-        <Toaster />
-      </body>
-    </html>
+          <ConvexClientProvider>
+            <NuqsAdapter>{children}</NuqsAdapter>
+            <Toaster />
+          </ConvexClientProvider>
+        </body>
+      </html>
     </ClerkProvider>
   );
 }
