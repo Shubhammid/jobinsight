@@ -1,4 +1,4 @@
-"usze client";
+"use client";
 
 import {
   AutosizeTextarea,

@@ -7,7 +7,7 @@ export const genAI = new GoogleGenAI({
   apiKey: apiKey,
 });
 
-export const model = "gemini-2.5-pro";
+export const model = "gemini-1.5-flash";
 
 export const chatSession = genAI.chats.create({
   model: model,
