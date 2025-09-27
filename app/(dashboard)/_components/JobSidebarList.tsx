@@ -42,20 +42,13 @@ const JobSidebarList = (props: { userId: string }) => {
       </SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu
-          className="min-h-[180px] max-h-[350px]
-             scrollbar overflow-y-auto pb-2
-              "
-        >
+          className="min-h-[180px] max-h-[350px] scrollbar overflow-y-auto pb-2">
           {jobs?.map((item) => {
             const jobPageUrl = `/job/${item._id}`;
             return (
               <SidebarMenuItem key={item._id}>
                 <SidebarMenuButton
-                  className={cn(
-                    `
-            !bg-transparent !text-white hover:!bg-gray-700
-            transition-colors
-            `,
+                  className={cn(`!bg-transparent !text-white hover:!bg-gray-700 transition-colors`,
                     jobPageUrl === pathname && "!bg-gray-700"
                   )}
                   asChild
