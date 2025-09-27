@@ -1,10 +1,13 @@
-
-import { Button } from '@/components/ui/button'
-import { SidebarGroup } from '@/components/ui/sidebar'
-import Image from 'next/image'
-import React from 'react'
+"use client";
+import React from "react";
+import { SidebarGroup } from "@/components/ui/sidebar";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { useSignInModal } from "@/hooks/use-signin-modal";
 
 const SignInPrompt = () => {
+  const { open } = useSignInModal();
+
   return (
     <SidebarGroup>
       <div
@@ -25,12 +28,12 @@ const SignInPrompt = () => {
         >
           Sign in for free to save your job history
         </span>
-        <Button className="mt-6">
+        <Button onClick={open} className="mt-6">
           Sign in
         </Button>
       </div>
     </SidebarGroup>
-  )
-}
+  );
+};
 
-export default SignInPrompt
+export default SignInPrompt;
