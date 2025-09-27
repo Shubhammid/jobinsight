@@ -33,8 +33,8 @@ export const processJobWithAI = internalAction({
       });
       if (response.text) {
         const parsedResponse = JSON.parse(response.text);
-        title = parsedResponse.title;
-        htmlDescription = parsedResponse.htmlDescription;
+        title = parsedResponse.title ?? title;
+        htmlDescription = parsedResponse.htmlDescription ?? "";
       }
     } catch (error) {
       console.log("AI processing failed", error);
