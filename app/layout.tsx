@@ -5,6 +5,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ConvexClientProvider } from "@/context/ConvexClientProvider";
+import { Suspense } from "react";
+import FallbackLoader from "@/components/FallbackLoader";
 
 const onest = Onest({ subsets: ["latin"] });
 
@@ -64,7 +66,9 @@ export default function RootLayout({
           suppressHydrationWarning
         >
           <ConvexClientProvider>
-            <NuqsAdapter>{children}</NuqsAdapter>
+            <Suspense fallback={<FallbackLoader />}>
+              <NuqsAdapter>{children}</NuqsAdapter>
+            </Suspense>
             <Toaster />
           </ConvexClientProvider>
         </body>
