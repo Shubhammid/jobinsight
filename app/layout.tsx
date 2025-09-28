@@ -26,30 +26,6 @@ export const metadata: Metadata = {
     "resume optimization",
     "AI job matching"
   ],
-  openGraph: {
-    title: "AI Job Assistance | Smart Career Tools to Land Your Dream Job",
-    description:
-      "Use AI to analyze job descriptions, generate resumes, write cover letters, and get career insights. Accelerate your job search with smart AI-powered tools.",
-    url: "https://yourdomain.com",
-    siteName: "AI Job Assistance",
-    images: [
-      {
-        url: "https://yourdomain.com/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "AI Job Assistance Platform",
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "AI Job Assistance | Smart Job Description Analysis & Career Tools",
-    description:
-      "AI-powered tools to analyze job descriptions, build resumes, and create personalized cover letters. Land your dream job with smarter career insights.",
-    images: ["https://yourdomain.com/twitter-card.jpg"],
-  },
 };
 
 
