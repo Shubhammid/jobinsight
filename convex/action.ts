@@ -5,7 +5,7 @@ import { processAndCleanJobDescription } from "@/lib/job-process";
 import { genAI } from "@/lib/gemini-ai";
 import { api } from "./_generated/api";
 import { getJobTitleDescPrompt } from "@/lib/prompt";
-import { JobStatus } from "@/lib/contants";
+import { JobInsightStatus, JobStatus, Role } from "@/lib/contants";
 
 export const processJobWithAI = internalAction({
   args: {
@@ -46,6 +46,14 @@ export const processJobWithAI = internalAction({
       processedDescription: processedDesc,
       htmlFormatDescription: htmlDescription,
       status: JobStatus.READY,
+    });
+
+    await ctx.scheduler.runAfter(0, api.jobInsightConversation.create, {
+      userId: args.userId,
+      jobId: args.jobId,
+      text: welcomeMessage(title),
+      role: Role.AI,
+      status: JobInsightStatus.COMPLETED,
     });
   },
 });
