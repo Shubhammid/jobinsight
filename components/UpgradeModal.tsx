@@ -7,7 +7,13 @@ import React, { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { InfoIcon, Loader, Sparkles } from "lucide-react";
 import { Slider } from "./ui/slider";
-import { Button } from "./ui/button";
+import { Button } from "./ui/button"
+import { useAction } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { ConvexError } from "convex/values";
+import { toast } from "sonner";
+
+const NEXT_PUBLIC_REDIRECT_URL = process.env.NEXT_PUBLIC_REDIRECT_URL!;;
 
 const UpgradeModal = () => {
   const { user } = useUser();
@@ -16,14 +22,34 @@ const UpgradeModal = () => {
   const [selectedCredits, setSelectedCredits] = useState(CREDIT_DEFAULT_VALUE);
   const [isLoading, setIsLoading] = useState(false);
 
+  const createPayPalOrder = useAction(api.paymentAction.createPaypalOrder);
 
   const totalPrice = selectedCredits * PRICE_PER_CREDIT;
-
 
   const onCreateOrder = async () => {
      if (!user) {
       openSignInModal();
       return;
+    }
+    setIsLoading(true);
+    try {
+      const payPalUrl = await createPayPalOrder({
+        amount: totalPrice,
+        userId: user.id,
+        credits: selectedCredits,
+        redirectUrl: NEXT_PUBLIC_REDIRECT_URL,
+      });
+      window.location.href = payPalUrl;
+    } catch (error) {
+      console.log(error);
+      const errorMsg =
+        error instanceof ConvexError
+          ? error.data.message
+          : "Failed to create order";
+
+      toast.error(errorMsg);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (

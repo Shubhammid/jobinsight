@@ -23,7 +23,7 @@ export const processJobWithAI = internalAction({
     try {
       const prompt = getJobTitleDescPrompt(processedDesc);
       const response = await genAI.models.generateContent({
-        model: "gemini-2.0-flash",
+        model: "gemini-flash-lite-latest",
         contents: [{ role: "user", parts: [{ text: prompt }] }],
         config: {
           maxOutputTokens: 2000,
